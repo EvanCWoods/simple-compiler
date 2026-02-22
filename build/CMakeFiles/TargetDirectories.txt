@@ -1,0 +1,3 @@
+/Users/evan23first/code/projects/compiler/build/CMakeFiles/beach.dir
+/Users/evan23first/code/projects/compiler/build/CMakeFiles/edit_cache.dir
+/Users/evan23first/code/projects/compiler/build/CMakeFiles/rebuild_cache.dir
