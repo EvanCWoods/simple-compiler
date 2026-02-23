@@ -91,6 +91,15 @@ std::string tokens_to_asm(const std::vector<Token>& tokens) {
     return output.str();
 }
 
+void compile_and_run() {
+    // Compile the assembly code to an object file
+    system("nasm -f macho64 out.asm -o out.o");
+    // Link the object file to an executable
+    system("clang -target x86_64-apple-macos10.15 -nostdlib -e _start -lSystem -Wl,-w -o out out.o");
+    // Run the executable
+    system("./out");
+}
+
 
 int main(int argc, char* argv[]) {
 
@@ -110,16 +119,12 @@ int main(int argc, char* argv[]) {
     std::vector<Token> tokens = tokenize(contents);
     std::string asm_code = tokens_to_asm(tokens);
 
-    std::cout << asm_code << std::endl;
-
     {
         std::fstream file("out.asm", std::ios::out);
         file << asm_code;
     }
 
-
-    system("nasm -f macho64 out.asm -o out.o");
-    system("clang -arch x86_64 -nostdlib -e _start -lSystem -Wl,-macosx_version_min,10.15 -o out out.o");
+    compile_and_run();
 
     return EXIT_SUCCESS;
 }
