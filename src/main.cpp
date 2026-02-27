@@ -4,69 +4,7 @@
 #include <sstream>
 #include <optional>
 
-enum class TokenType {
-    _return,
-    integer_literal,
-    semicolon,
-};
-
-struct Token {
-    TokenType type;
-    std::optional<std::string> value {};
-};
-
-
-std::vector<Token> tokenize(const std::string& str) {
-    
-    std::vector<Token> tokens;
-
-    std::string buf;
-
-    for (int i = 0; i < str.length(); i++) {
-        const char& c = str[i];
-        if (std::isalpha(c)) {
-            buf.push_back(c);
-            i++;
-            while (std::isalnum(str[i])) {
-                buf.push_back(str[i]);
-                i++;
-            }
-            i--;
-            if (buf == "return") {
-                tokens.push_back({.type = TokenType::_return});
-                buf.clear();
-                continue;
-            } else {
-                std::cerr << "You messed up!! " << buf << std::endl;
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if (std::isdigit(c)) {
-            buf.push_back(c);
-            i++;
-            while(std::isdigit(str.at(i))) {
-                buf.push_back(str.at(i));
-                i++;
-            }
-            i--;
-            tokens.push_back({.type = TokenType::integer_literal, .value = buf});
-            buf.clear();
-            continue;
-        }
-        else if (c == ';') {
-            tokens.push_back({.type = TokenType::semicolon});
-            continue;
-        }
-        else if (std::isspace(c)) {
-            continue;
-        } else {
-            std::cerr << "You messed up!! " << buf << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    return tokens;
-}
+#include "./tokenizer.hpp"
 
 // Function to translate the tokens to Assembly
 std::string tokens_to_asm(const std::vector<Token>& tokens) {
@@ -116,7 +54,8 @@ int main(int argc, char* argv[]) {
         contents = contents_stream.str();
     }
 
-    std::vector<Token> tokens = tokenize(contents);
+    Tokenizer tokenizer(std::move(contents));
+    std::vector<Token> tokens = tokenizer.tokenize();
     std::string asm_code = tokens_to_asm(tokens);
 
     {

@@ -1,5 +1,5 @@
 global _start
 _start:
     mov rax, 0x2000001
-    mov rdi, 13
+    mov rdi, 8
     syscall
